@@ -22,7 +22,7 @@ resource "google_compute_instance" "default" {
    }
  }
 
-// Make sure flask is installed on all new instances for later steps
+// You can enter the commands you want to run inside the machine.
  metadata_startup_script = "sudo apt-get update; sudo apt-get install -yq build-essential python-pip rsync"
 
  network_interface {
