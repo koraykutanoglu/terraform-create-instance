@@ -1,28 +1,32 @@
-// Configure the Google Cloud provider
 provider "google" {
  credentials = file("key.json")
  project     = "secops-xxxx"
  region      = "us-central1"
 }
 
-// Terraform plugin for creating random ids
 resource "random_id" "instance_id" {
  byte_length = 8
 }
 
-// A single Compute Engine instance
 resource "google_compute_instance" "default" {
- name         = "terraform-${random_id.instance_id.hex}"
- machine_type = "f1-micro"
- zone         = "us-central1-a"
+ can_ip_forward = false
+ name           = "terraform-${random_id.instance_id.hex}"
+ machine_type   = "f1-micro"
+ zone           = "us-central1-a"
 
- boot_disk {
-   initialize_params {
-     image = "ubuntu-os-cloud/ubuntu-minimal-2004-lts"
+
+boot_disk {
+    device_name = "disk1"  //disk name
+
+
+  initialize_params {
+    image = "ubuntu-os-cloud/ubuntu-minimal-2004-lts"
+    size  = "23"   //disk size
+    type  = "pd-standard"  //pd-standard, pd-balanced or pd-ssd
    }
  }
 
-// You can enter the commands you want to run inside the machine.
+// Make sure flask is installed on all new instances for later steps
  metadata_startup_script = "sudo apt-get update; sudo apt-get install -yq build-essential python-pip rsync"
 
  network_interface {
